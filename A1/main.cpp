@@ -13,6 +13,7 @@ int main(){
 	v = data.file_open(',');*/
 
 	fisher_discriminant fd(file);
-	fd.mean_calculation();
+	
+	vector<float> w =fd.w_calculation();
 	return 0;
 }
