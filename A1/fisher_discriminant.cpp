@@ -13,19 +13,19 @@ class fisher_discriminant
 			data = training_data.file_open(',');
 		}
 		void mean_calculation(){
-			int pos_example,neg_example;
+			int pos_example=0,neg_example=0;
 			int instances = 4;		//No of Instances in Training data
 			vector<float> pos_EgSUM_xi(instances,0);
 			vector<float> neg_EgSUM_xi(instances,0);
 			int data_sz = data.size();
-			for(int i=0;i<data_sz;i++){
-				if(data[i][data_sz-1]==0){
+			for(int i=0;i<data_sz-1;i++){
+				if(data[i][data[i].size()-1]==0){
 					neg_example++;
 					for(int j=0;j<neg_EgSUM_xi.size();j++){
 						neg_EgSUM_xi[j]+=data[i][j];
 					}
 				}
-				if(data[i][data_sz-1]==1){
+				if(data[i][data[i].size()-1]==1){
 					pos_example++;
 					for(int j=0;j<pos_EgSUM_xi.size();j++){
 						pos_EgSUM_xi[j]+=data[i][j];
@@ -36,6 +36,7 @@ class fisher_discriminant
 				miu1.push_back((pos_EgSUM_xi[i]/pos_example));
 				miu2.push_back((neg_EgSUM_xi[i]/neg_example));
 			}
-		}
+
+		}	
 
 };

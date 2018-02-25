@@ -13,12 +13,6 @@ int main(){
 	v = data.file_open(',');*/
 
 	fisher_discriminant fd(file);
-	//fd.getdata();
-	for(int i=0;i<fd.data.size();i++){
-		for(int j=0;j<fd.data[i].size();j++){
-			cout<<fd.data[i][j]<<" ";
-		}
-		cout<<endl;
-	}
+	fd.mean_calculation();
 	return 0;
 }
