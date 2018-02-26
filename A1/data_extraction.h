@@ -11,7 +11,7 @@ class extract_data{
 		extract_data(string file){
 			filename = file;
 		}
-		std::vector<std::vector<float> > file_open(char delimiter){
+		std::vector<std::vector<double> > file_open(char delimiter){
 			ifstream inFile;
 			inFile.open(filename);
 			if(!inFile){
@@ -20,7 +20,7 @@ class extract_data{
 			}
 			string occurence;
 			int lineno = 0;
-			vector < vector< float > > data(961);
+			vector < vector< double > > data(960);
 			while(inFile >> occurence){
 				int delim_occur = occurence.find(delimiter);
 				string occur;
