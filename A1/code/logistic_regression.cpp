@@ -11,7 +11,7 @@ class LogisticRegression
         LogisticRegression(vector<vector<double> > training_data);
         double calculateCost(vector<double> params);
         double calculateChange(vector<double> params, int idx);
-        int gradientDescent(double alpha, double epsilon);
+        void gradientDescent(int num_iterations, double alpha, double epsilon);
         void predict(vector<vector<double> > test_data);
         void printOutput();
 };
@@ -22,7 +22,7 @@ LogisticRegression::LogisticRegression(vector<vector<double> > training_data)
     rows = data.size();
     dimensions = data[0].size();
     for(int i=0; i<dimensions; i++) weights.push_back(1.0);
-    gradientDescent(0.02, 0.001);
+    gradientDescent(500, 0.02, 0.001);
 }
 
 double LogisticRegression::calculateCost(vector<double> params)
@@ -36,9 +36,9 @@ double LogisticRegression::calculateCost(vector<double> params)
         }
         sum = sigmoid(sum);
         if(data[i][dimensions-1] == 0)
-            cost += -1.0*(1-sum);
+            cost += -1.0*log(1-sum);
         else 
-            cost += -1.0*sum;
+            cost += -1.0*log(sum);
     }
     return cost;
 }
@@ -60,12 +60,13 @@ double LogisticRegression::calculateChange(vector<double> params, int idx)
     return tot;
 }
 
-int LogisticRegression::gradientDescent(double alpha, double epsilon)
+void LogisticRegression::gradientDescent(int num_iterations, double alpha, double epsilon)
 {
-    int iterations = 0;
+    int iteration = 0;
     double prev_cost, curr_cost = calculateCost(weights), delta_cost = 1.0, prev;
     vector<double> temp = weights;
-    while(delta_cost > epsilon){
+    while(iteration < num_iterations){
+        //cout << iterations << ": " << curr_cost << endl;
         prev_cost = curr_cost;
         for(int i=0; i<dimensions; i++){
             temp[i] = temp[i] - alpha * calculateChange(weights, i);
@@ -73,9 +74,8 @@ int LogisticRegression::gradientDescent(double alpha, double epsilon)
         weights = temp;
         curr_cost = calculateCost(weights);
         delta_cost = prev_cost - curr_cost;
-        iterations++;
+        iteration++;
     }
-    return iterations;
 }
 
 void LogisticRegression::predict(vector<vector<double> > test_data)
@@ -122,6 +122,6 @@ void LogisticRegression::printOutput()
 
 	cout << "  CONFUSION MATRIX" << endl;
 	cout << "\t      Predicted = 0\t  Predicted=1" << endl;
-	cout << "    Actual=0: " << true_negative << "\t\t\t  " << false_positive << endl;
+	cout << "    Actual=0: " << true_negative << "\t\t  " << false_positive << endl;
 	cout << "    Actual=1: " << false_negative << "\t\t\t " << true_positive << endl;
 }
