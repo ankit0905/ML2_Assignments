@@ -1,7 +1,3 @@
-#include "helper.h"
-
-#define PI  3.14159265358
-
 class ProbGenrModel
 {
 	private:
@@ -206,13 +202,13 @@ void ProbGenrModel::printOutput()
 							true_negative+false_negative+false_positive);
 	double precision = (double)true_positive/(true_positive+false_positive);
 	double recall = (double)true_positive/(true_positive+false_negative);
-	cout << "PROBABILISTIC GENERATIVE MODEL" << endl;
-	cout << "Accuracy: " << accuracy << endl;
-	cout << "Precision: " << precision << endl;
-	cout << "Recall: " << recall << endl << endl;
+	cout << "TASK#2: PROBABILISTIC GENERATIVE MODEL" << endl;
+	cout << "    Accuracy: " << accuracy << endl;
+	cout << "    Precision: " << precision << endl;
+	cout << "    Recall: " << recall << endl << endl;
 
-	cout << "CONFUSION MATRIX" << endl;
-	cout << "\t  Predicted = 0\t  Predicted=1" << endl;
-	cout << "Actual=0: " << true_negative << "\t\t  " << false_positive << endl;
-	cout << "Actual=1: " << false_negative << "\t\t  " << true_positive << endl;
+	cout << "  CONFUSION MATRIX" << endl;
+	cout << "\t      Predicted = 0\t  Predicted=1" << endl;
+	cout << "    Actual=0: " << true_negative << "\t\t  " << false_positive << endl;
+	cout << "    Actual=1: " << false_negative << "\t\t\t " << true_positive << endl;
 }

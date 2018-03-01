@@ -1,6 +1,10 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+#define PI  3.14159265358
+#define N 4
+
+#include "helper.h"
 #include "data_extraction.h"
 #include "fisher_discriminant.cpp"
 #include "prob_gen.cpp"
@@ -19,11 +23,12 @@ int main(){
 	training_data = train_obj.file_open(',');
 	test_data = test_obj.file_open(',');
 	
-	//fisher_discriminant fd(train_file);
-	//fd.precision_recall(test_file);
+	Fisher_discriminant fd(training_data);
+	fd.precision_recall(test_data);
+	fd.printOutput();
 
 	ProbGenrModel pgm(training_data);
-	pgm.predict(test_data);
+	pgm.predict_2(test_data);
 	pgm.printOutput();
 
 	return 0;
