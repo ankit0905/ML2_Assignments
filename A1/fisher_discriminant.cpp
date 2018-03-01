@@ -16,19 +16,13 @@ class fisher_discriminant
 		{
 		    int i = 0, j = 0;
 		 
-		    // Looping for each element of the matrix
 		    for (int row = 0; row < n; row++)
 		    {
 		        for (int col = 0; col < n; col++)
 		        {
-		            //  Copying into temporary matrix only those element
-		            //  which are not in given row and column
 		            if (row != p && col != q)
 		            {
 		                temp[i][j++] = A[row][col];
-		 
-		                // Row is filled, so increase row index and
-		                // reset col index
 		                if (j == n - 1)
 		                {
 		                    j = 0;
@@ -38,36 +32,27 @@ class fisher_discriminant
 		        }
 		    }
 		}
-		 
-		/* Recursive function for finding determinant of matrix.
-		   n is current dimension of A[][]. */
 		double determinant(double A[N][N], int n)
 		{
-		    double D = 0; // Initialize result
+		    double D = 0;
 		 
-		    //  Base case : if matrix contains single element
 		    if (n == 1)
 		        return A[0][0];
 		 
-		    double temp[N][N]; // To store cofactors
+		    double temp[N][N];
 		 
-		    double sign = 1;  // To store sign multiplier
+		    double sign = 1;
 		 
-		     // Iterate for each element of first row
 		    for (int f = 0; f < n; f++)
 		    {
-		        // Getting Cofactor of A[0][f]
 		        this->getCofactor(A, temp, 0, f, n);
 		        D += sign * A[0][f] * this->determinant(temp, n - 1);
-		 
-		        // terms are to be added with alternate sign
 		        sign = -sign;
 		    }
 		 
 		    return D;
 		}
-		 
-		// Function to get adjoint of A[N][N] in adj[N][N].
+		
 		void adjoint(double A[N][N],double adj[N][N])
 		{
 		    if (N == 1)
@@ -75,30 +60,18 @@ class fisher_discriminant
 		        adj[0][0] = 1;
 		        return;
 		    }
-		 
-		    // temp is used to store cofactors of A[][]
 		    double sign = 1, temp[N][N];
 		 
 		    for (int i=0; i<N; i++)
 		    {
 		        for (int j=0; j<N; j++)
 		        {
-		            // Get cofactor of A[i][j]
 		            this->getCofactor(A, temp, i, j, N);
-		 
-		            // sign of adj[j][i] positive if sum of row
-		            // and column indexes is even.
-		            sign = ((i+j)%2==0)? 1: -1;
-		 
-		            // Interchanging rows and columns to get the
-		            // transpose of the cofactor matrix
+		 	        sign = ((i+j)%2==0)? 1: -1;
 		            adj[j][i] = (sign)*(this->determinant(temp, N-1));
 		        }
 		    }
 		}
-		 
-		// Function to calculate and store inverse, returns false if
-		// matrix is singular
 		bool inverse(double A[N][N], double inverse[N][N])
 		{
 		    // Find determinant of A[][]
@@ -108,23 +81,14 @@ class fisher_discriminant
 		        cout << "Singular matrix, can't find its inverse";
 		        return false;
 		    }
-		 
-		    // Find adjoint
-		    double adj[N][N];
+		 	double adj[N][N];
 		    this->adjoint(A, adj);
-		 
-		    // Find Inverse using formula "inverse(A) = adj(A)/det(A)"
-		    for (int i=0; i<N; i++)
+		 	for (int i=0; i<N; i++)
 		        for (int j=0; j<N; j++)
 		            inverse[i][j] = adj[i][j]/det;
 		 
 		    return true;
 		}
-		 
-		// Generic function to display the matrix.  We use it to display
-		// both adjoin and inverse. adjoin is integer matrix and inverse
-		// is a float.
-		
 		fisher_discriminant(string file){
 			extract_data training_data(file);		
 			data = training_data.file_open(',');
@@ -153,20 +117,15 @@ class fisher_discriminant
 			for(int i=0;i<pos_EgSUM_xi.size();i++){
 				miu1.push_back((pos_EgSUM_xi[i]/pos_example));
 				miu2.push_back((neg_EgSUM_xi[i]/neg_example));
-				//cout<<miu1[i]<<" "<<miu2[i]<<endl;
 			}
 		}	
 		vector<vector<double> > sw_calculation(){
 			this->mean_calculation();
-			vector<vector<double> > sw {{0,0,0,0},
-										{0,0,0,0},
-										{0,0,0,0},
-										{0,0,0,0}};
-
-			for(int i=0;i<data_sz-1;i++){
+			vector<vector<double> > sw {{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
+			for(int i=0;i<data_sz;i++){
 				if(data[i][data[i].size()-1]==0){
-					for(int j=0;j<miu1.size();j++){
-						for(int k=0;k<miu1.size();k++){
+					for(int j=0;j<miu2.size();j++){
+						for(int k=0;k<miu2.size();k++){
 							sw[j][k]+=((data[i][j]-miu2[j])*(data[i][k]-miu2[k]));
 						}
 					}
@@ -179,12 +138,6 @@ class fisher_discriminant
 					}
 				}
 			}
-			/*for(int i=0;i<sw.size();i++){
-				for(int j=0;j<sw[i].size();j++){
-					cout<<sw[i][j]<<" ";
-				}
-				cout<<endl;
-			}*/
 			return sw;
 		}
 		vector<double> w_calculation(){
@@ -193,7 +146,6 @@ class fisher_discriminant
 			double sw_inverse[4][4],Mat[4][4];
 			for(int i=0;i<4;i++){
 				for(int j=0;j<4;j++){
-					//sw_inverse[i][j]=sw[i][j];
 					Mat[i][j]=sw[i][j];
 				}
 			}
@@ -201,77 +153,91 @@ class fisher_discriminant
 			for(int i=0;i<miu1.size();i++){
 				double val=0;
 				for(int j=0;j<miu1.size();j++){
-					val+=((miu2[j]-miu1[j]))*sw_inverse[i][j];
+					val+=((miu1[j]-miu2[j]))*sw_inverse[i][j];
 				}
 				w_.push_back(val);
 			}
-			/*for(int i=0;i<w.size();i++){
-				cout<<w[i]<<" ";
-			}*/
 			return w_;
 		}
 		double threshold_calculation(){
 			w=this->w_calculation();
-			vector<double> pt1D;
+			vector<pair<double,double> >pt1D;
+			
 			for(int i=0;i<data_sz;i++){
 				double y_x=0;
-				for(int j=0;j<data[i].size();j++){
+				for(int j=0;j<w.size();j++){
 					y_x+=(data[i][j]*w[j]);
 				}
-				pt1D.push_back(y_x);
+				pt1D.push_back(make_pair(y_x,data[i][4]));
 			}
-			sort(pt1D.begin(),pt1D.end(),std::greater<double>());
+			sort(pt1D.begin(),pt1D.end());
+			reverse(pt1D.begin(),pt1D.end());
 			double min_etpy = DBL_MAX; 
 			double threshold;
-			int p,nn;
 			for(int i=0;i<pt1D.size()-1;i++){
-				double f = (pt1D[i]+pt1D[i+1])/2;
-				int pos=0,neg=0;
+				double f = (pt1D[i].first+pt1D[i+1].first)/2;
+				double pos0=0,neg0=0,pos1=0,neg1=0;
 				for(int j=0;j<pt1D.size();j++){
-					if(pt1D[j]<=f){
-						neg++;
+					if(pt1D[j].first<f && pt1D[j].second==1){
+						pos0++;
 					}
-					else{
-						pos++;
+					if(pt1D[j].first<f && pt1D[j].second==0){
+						neg0++;
+					}
+					if(pt1D[j].first>=f && pt1D[j].second==0){
+						neg1++;
+					}
+					if(pt1D[j].first>=f && pt1D[j].second==1){
+						pos1++;
 					}
 				}
-				double total = pos+neg;
-				double entropy = -1*(((pos/total) * log(((pos/total)))) + (((neg/total))*log((neg/total))));
+				double entropy = (-1*(((pos0/(pos0+neg0)) * (log(((pos0/(pos0+neg0))))/(log(2)))) + (((neg0/(pos0+neg0)))*(log((neg0/(pos0+neg0)))/(log(2))))))
+								+(-1*(((pos1/(pos1+neg1)) * (log(((pos1/(pos1+neg1))))/(log(2)))) + (((neg1/(pos1+neg1)))*(log((neg1/(pos1+neg1)))/(log(2))))));
+				
 				if(entropy<min_etpy){
 					min_etpy=entropy;
 					threshold=f;
-					p = pos;
-					nn = neg;
 				}
 			}
 			return threshold;		
 		}
-		void precision_recall(string file){
+		void precision_recall(string tstfile){
 			double threshold = this->threshold_calculation();
-			extract_data training_data(file);		
+			extract_data training_data(tstfile);		
 			vector<vector<double> >  test_data = training_data.file_open(',');
-			cout<<w.size()<<endl;
-			int true_pos=0,false_pos=0,true_neg=0,false_neg=0;
-			for(int i=0;i<test_data.size();i++){
+			double true_pos=0,false_pos=0,true_neg=0,false_neg=0;
+			cout<<"W_transpose is"<<endl;
+			for(int i=0;i<w.size();i++){
+				cout<<w[i]<<" ";
+			}
+			cout<<endl;
+			for(int i=0;i<412;i++){
 				double wx=0;
 				for(int j=0;j<w.size();j++){
 					wx+=w[j]*test_data[i][j];
 				}
-				if(wx>=threshold && test_data[i][5]==1){
-					true_pos++;
+				int predicted_class,true_class;
+				if(wx<threshold){
+					predicted_class=0;
+					//cout<<0<<endl;
 				}
-				else if(wx>=threshold && test_data[i][5]==0){
-					false_pos++;
+				else{
+					predicted_class=1;
+					//cout<<1<<endl;
 				}
-				else if(wx<threshold && test_data[i][5]==0){
-					true_neg++;
+				true_class = test_data[i][4];
+				if(true_class == predicted_class){
+					if(true_class == 0) true_neg++;
+					else true_pos++;
 				}
-				else if(wx<threshold && test_data[i][5]==1){
-					false_neg++;
+				else{
+					if(true_class == 0) false_pos++;
+					else false_neg++;
 				}
 			}
 			double precision = (true_pos)/(true_pos+false_pos); 
 			double recall = (true_pos)/(true_pos+false_neg);
-			cout<<precision<<" "<<recall<<endl;
+			cout<<"Precision=\t"<<precision<<"\nRecall   =\t"<<recall<<endl;
+			//cout<<true_pos<<" "<<false_pos<<" "<<false_neg<<" "<<true_neg<<endl;
 		}
 };
