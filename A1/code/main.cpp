@@ -8,13 +8,14 @@ using namespace std;
 #include "data_extraction.h"
 #include "fisher_discriminant.cpp"
 #include "prob_gen.cpp"
+#include "logistic_regression.cpp"
 
 int main(){
 	string train_file,test_file;
 	
 	//change filename giving path to test or train in csv format 
-	train_file = "data/train.txt";
-	test_file = "data/test.txt";
+	train_file = "../data/train.txt";
+	test_file = "../data/test.txt";
 	
 	extract_data train_obj(train_file);
 	extract_data test_obj(test_file);
@@ -30,6 +31,10 @@ int main(){
 	ProbGenrModel pgm(training_data);
 	pgm.predict_2(test_data);
 	pgm.printOutput();
+
+	LogisticRegression lr(training_data);
+	lr.predict(test_data);
+	lr.printOutput();
 
 	return 0;
 }

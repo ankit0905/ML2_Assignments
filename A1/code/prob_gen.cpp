@@ -210,5 +210,5 @@ void ProbGenrModel::printOutput()
 	cout << "  CONFUSION MATRIX" << endl;
 	cout << "\t      Predicted = 0\t  Predicted=1" << endl;
 	cout << "    Actual=0: " << true_negative << "\t\t  " << false_positive << endl;
-	cout << "    Actual=1: " << false_negative << "\t\t\t " << true_positive << endl;
+	cout << "    Actual=1: " << false_negative << "\t\t\t " << true_positive << endl << endl << endl;
 }
