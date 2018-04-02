@@ -15,33 +15,33 @@ Then execute using the following command:
 	
 ### Results
 
-**Task#1: Fisher Discriminant Model**  
+**Fisher Discriminant Model**  
 
-Accuracy: 0.985437  
-Precision: 0.983784  
-Recall: 0.983784  
-
-|               | Predicted = 0 | Predicted = 1  |
-| ------------- | ------------- | -------------- |
-| *Actual = 0*  | 	  224		    |		  3		       |
-| *Actual = 1*  | 	  3	 	      |   	182		     |
-
-**Task#2: Probabilistic Generative Model**
-
-Accuracy: 0.973301  
-Precision: 0.943878  
-Recall: 1  
+*Accuracy:*: 0.985437  
+*Precision:* 0.983784  
+*Recall:* 0.983784  
 
 |               | Predicted = 0 | Predicted = 1  |
 | ------------- | ------------- | -------------- |
 | *Actual = 0*  | 	  224		    |		  3		       |
 | *Actual = 1*  | 	  3	 	      |   	182		     |
 
-**Task#3: Logistic Regression**
+**Probabilistic Generative Model**
 
-Accuracy: 0.997573  
-Precision: 1  
-Recall: 0.994595  
+*Accuracy:* 0.973301  
+*Precision:* 0.943878  
+*Recall:* 1  
+
+|               | Predicted = 0 | Predicted = 1  |
+| ------------- | ------------- | -------------- |
+| *Actual = 0*  | 	  224		    |		  3		       |
+| *Actual = 1*  | 	  3	 	      |   	182		     |
+
+**Logistic Regression**
+
+*Accuracy:*: 0.997573  
+*Precision:* 1  
+*Recall:* 0.994595  
 
 |               | Predicted = 0 | Predicted = 1  |
 | ------------- | ------------- | -------------- |
@@ -52,3 +52,4 @@ Recall: 0.994595
 The parameters used for the Gradient Descent algorithm in the task#3 are:  
 * No. of iterations = 11000
 * Learning Rate (alpha) = 0.003
+
