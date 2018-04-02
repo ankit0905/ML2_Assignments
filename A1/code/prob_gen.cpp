@@ -1,3 +1,6 @@
+/* Class that implements Probabilistic Generative Model
+
+*/
 class ProbGenrModel
 {
 	private:
@@ -18,6 +21,9 @@ class ProbGenrModel
 		void predict_2(vector<vector<double> > test_data);
 };
 
+/* Constructor Method for the class
+	data: set of training examples
+*/
 ProbGenrModel::ProbGenrModel(vector<vector<double> > data)
 {
 	this -> data = data;
@@ -28,6 +34,9 @@ ProbGenrModel::ProbGenrModel(vector<vector<double> > data)
 	computeWeights();
 }
 
+/* The method calculates the mean vectors for both the classes.
+	The dimension is same as the number of features.
+*/
 void ProbGenrModel::mean_calculation()
 {
 	int class_;
@@ -51,6 +60,11 @@ void ProbGenrModel::mean_calculation()
 	}
 }
 
+/* Method to calculate the Shared Covariance Matrix of the two classes.
+	Formula:
+		covariance_matrix = (N1/N)*S1 + (N2/N)*S2
+		S1 and S2 are the class covariance matrices.
+*/
 void ProbGenrModel::covariance_calculation()
 {
 	double sum1, sum2;
@@ -68,6 +82,14 @@ void ProbGenrModel::covariance_calculation()
 	}
 }
 
+/* Method to predict the classes of the test data.
+	The method updates the variables true_positive, true_negative, false_positive & false_negative.
+
+	The method uses MLE (Maximum Likelihood Expectation) for calculating probabilites p(x,C1) & p(x,C2).
+		p(xi,Ck) = p(Ck)*p(xi|Ck)
+	Here, the class conditional densities are assumed to have Gaussian Distribution.
+
+*/
 void ProbGenrModel::predict_2(vector<vector<double> > test_data)
 {
 	double pX_C0, pX_C1;
@@ -126,6 +148,10 @@ void ProbGenrModel::predict_2(vector<vector<double> > test_data)
 	}
 }
 
+/* Method to compute the weight vector for the classification directly. 
+	This is alternate way to implement the Generative Model.
+
+*/
 void ProbGenrModel::computeWeights()
 {
 	vector<vector<double> > sigma_inverse(4, vector<double>(4));
@@ -170,6 +196,15 @@ void ProbGenrModel::computeWeights()
 	bias += log((double)count_c0/count_c1);
 }
 
+/* Method to predict the classes of the test data.
+	The method updates the variables true_positive, true_negative, false_positive & false_negative.
+
+	The method uses the computed weight vector for classifying the test data.
+		p(C1 | x) = sigmoid(w.T*x + bias)
+		p(C2 | x) = 1 - p(C1 | x)
+	The class with higher value of p is assigned to x.
+
+*/
 void ProbGenrModel::predict(vector<vector<double> > test_data)
 {
 	int size = test_data.size();
@@ -196,6 +231,14 @@ void ProbGenrModel::predict(vector<vector<double> > test_data)
 	
 }
 
+/* Method to print the following using the variables true_positive, true_negative, 
+	false_positive and false_negative:
+		1. Accuracy
+		2. Precision
+		3. Recall
+		4. Confusion Matrix
+
+*/
 void ProbGenrModel::printOutput()
 {
 	double accuracy = (double)(true_positive+true_negative)/(true_positive+

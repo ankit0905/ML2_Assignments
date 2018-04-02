@@ -13,7 +13,7 @@ using namespace std;
 int main(){
 	string train_file,test_file;
 	
-	//change filename giving path to test or train in csv format 
+	//change filename giving path to test or train files 
 	train_file = "../data/train.txt";
 	test_file = "../data/test.txt";
 	
