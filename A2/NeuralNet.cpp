@@ -159,7 +159,35 @@ class NeuralNets
 				wk_yk_minus_tk.push_back(row);
 			}
 			
+			vector<vector<double> > derivative_H_j;
+			for(int k=0;k<Z_j.size();k++){
+				vector<double> row;
+				for(int i=0;i<Z_j.size();i++){
+					double a=0;
+					for(int j=0;j<Z_j[i].size();j++){
+						a+=Z_j[k][j]*(1-Z_j[i][j]);
+					}
+					row.push_back(a);
+				}
+				derivative_H_j.push_back(row);
+			}
 
+			for(int i=0;i<derivative_H_j.size();i++){
+				vector<double> row;
+				for(int j=0;j<wk_yk_minus_tk[0].size();j++){
+					double a=0;
+					for(int k=0;k<wk_yk_minus_tk.size();k++){
+						a+= derivative_H_j[i][j]*wk_yk_minus_tk[k][j];
+					}
+					row.push_back(a);
+				}
+				delta_j.push_back(row);
+			}
+			
+			//Multiply Z_i (65*3100) matrix and delta_j (5*3100) matrix
+			/*for(int i=0;i<input_layer_nodes;i++){
+				for(int j=0;j<)
+			}*/
 		}
 	
 };
