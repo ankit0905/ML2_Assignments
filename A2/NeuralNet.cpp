@@ -7,10 +7,8 @@ class NeuralNets
 		vector<vector<double> > training_data, test_data, validation_data;		
 		int hidden_layer_nodes,input_layer_nodes,output_layer_nodes,training_data_len;
 		vector<vector<double> > weights_ji,weights_kj;
-		vector<vector<double> > Z_i;
-		vector<vector<double> > A_j;
-		vector<vector<double> > Z_j;
-		vector<vector<double> > A_k;	
+		vector<vector<double> > Z_i,A_k,A_j,Z_j,Y_k,derivative_wrt_Wkj,derivative_wrt_Wji;
+		vector<vector<int> > T_k;	
 	public:
 		NeuralNets(int nodes){
 			hidden_layer_nodes = nodes;
@@ -32,6 +30,8 @@ class NeuralNets
 				}
 				weights_kj.push_back(row);
 			}
+			this->get_whole_data();
+			this->generate_tk();
 		}
 		vector<vector<double> > get_data(string filename){
 			extract_data obj(filename);
@@ -49,8 +49,24 @@ class NeuralNets
 		double sigmoid(double value){
     		return 1.0/(1.0+exp(-value));
 		}
-		void farward_prop_NN(){
-			
+		void generate_tk(){
+			std::vector<int> row;
+			for(int j=0;j<=9;j++){
+				T_k.push_back(row);
+			}
+			for(int i=0;i<training_data_len;i++){
+				int x = training_data[i][64];
+				for(int j=0;j<=9;j++){
+					if(x==j){
+						T_k[j].push_back(1);
+					}
+					else{
+						T_k[j].push_back(0);
+					}
+				}
+			}
+		}
+		void farward_prop_NN(){			
 			{
 				vector<double> row;
 				for(int i=0;i<training_data_len;i++){
@@ -101,12 +117,56 @@ class NeuralNets
 			}
 			cout<<"DONE farward_prop"<<endl;
 		}
+		void Back_propogation(){
+			vector<vector<double> >yk_minus_tk;
+			for(int i=0;i<T_k.size();i++){
+				vector<double> row;
+				for(int j=0;j<T_k[i].size();j++){
+					row.push_back(A_k[i][j]-T_k[i][j]);
+				}
+				yk_minus_tk.push_back(row);
+			}
+			for(int i=0;i<Z_j.size();i++){
+				vector<double> row;
+				for(int j=0;j<T_k.size();j++){
+					double a=0;
+					for(int k=0;k<T_k.size();k++){
+						a+=Z_j[i][k]*(yk_minus_tk[j][k]);
+					}
+					row.push_back(a);
+				}
+				derivative_wrt_Wkj.push_back(row);
+			}
+
+			/*for(int i=0;i<derivative_wrt_Wkj.size();i++){
+				for(int j=0;j<derivative_wrt_Wkj[i].size();j++){
+					cout<<derivative_wrt_Wkj[i][j]<<" ";
+				}
+				cout<<endl;
+			}*/
+			
+			vector<vector<double> > delta_j;
+			vector<vector<double> > wk_yk_minus_tk;
+			for(int i=0;i<hidden_layer_nodes;i++){
+				vector<double> row;
+				for(int j=0;j<yk_minus_tk[0].size();j++){
+					double a=0;
+					for(int k=0;k<output_layer_nodes;k++){
+						a+=weights_kj[k][i]*yk_minus_tk[k][j];
+					}
+					row.push_back(a);
+				}
+				wk_yk_minus_tk.push_back(row);
+			}
+			
+
+		}
 	
 };
 int main(){
 	NeuralNets nn(5);
-	nn.get_whole_data();
 	nn.farward_prop_NN();
+	nn.Back_propogation();
 	//cout<<nn.training_data[0][0];	
 	return 0;
 }
