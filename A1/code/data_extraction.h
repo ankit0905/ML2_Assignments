@@ -20,7 +20,7 @@ class extract_data{
 			}
 			string occurence;
 			int lineno = 0;
-			vector < vector< double > > data(960);
+			vector < vector< double > > data(3100);
 			while(inFile >> occurence){
 				int delim_occur = occurence.find(delimiter);
 				string occur;
