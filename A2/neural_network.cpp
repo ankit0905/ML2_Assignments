@@ -5,7 +5,7 @@ class NeuralNetwork
         vector<vector<double> > weights_ji, weights_kj, T_k, d_E_wkj, d_E_wji, prediction;
         vector<double> X_i, A_j, A_k, Z_j, Y_k, delta_k, delta_j;
         int D, N, M, K, index = 0;
-        const int batch_size = 100;
+        const int batch_size = 1;
 
     public:
         NeuralNetwork(vector<pair<vector<double>, int> > train_data, int no_hidden_units);
@@ -71,14 +71,18 @@ void NeuralNetwork::generateTargetValues()
 
 void NeuralNetwork::initializeWeights()
 {
+    srand(time(NULL));
     for(int j=0; j<M; j++){
         vector<double> row;
-        for(int i=0; i<=D; i++) row.push_back(-1);
+        for(int i=0; i<=D; i++) row.push_back(2*((double)rand()/RAND_MAX)-1);
         weights_ji.push_back(row);
+        for(int i=0; i<=D; i++) cout << weights_ji[j][i] << " ";
+        cout << endl;
     }
+    cout << endl;
     for(int k=0; k<K; k++){
         vector<double> row;
-        for(int j=0; j<=M; j++) row.push_back(-1);
+        for(int j=0; j<=M; j++) row.push_back(2*((double)rand()/RAND_MAX)-1);
         weights_kj.push_back(row);
     }
 }
@@ -88,7 +92,7 @@ void NeuralNetwork::forwardPropagation()
     index = index % N;
     
     int counter = batch_size;
-    double error;
+    for(int k=0; k<K; k++) delta_k[k] = 0;
     while(counter--){
         for(int i=0; i<D; i++) X_i[i] = training_data[index].first[i];
         X_i[D] = 1;
@@ -103,23 +107,29 @@ void NeuralNetwork::forwardPropagation()
                 A_j[j] += weights_ji[j][i]*X_i[i];
             }
             Z_j[j] = sigmoid(A_j[j]);
+            //cout << A_j[j] << "," << Z_j[j] << "  ";
         }
+        //cout << endl;
 
         Z_j[M] = 1;
         for(int k=0; k<K; k++){
-            A_k[k] = delta_k[k] = 0;
+            A_k[k] = 0;
             for(int j=0; j<=M; j++){
                 A_k[k] += weights_kj[k][j]*Z_j[j];
             }
             Y_k[k] = sigmoid(A_k[k]);
-            delta_k[k] = (Y_k[k] - T_k[index][k]);
+            delta_k[k] += (Y_k[k] - T_k[index][k]);
         }
         // cout << "OUTPUT: ";
-        // for(int k=0; k<K; k++) cout << Y_k[k] << " ";
+        // for(int k=0; k<K; k++) cout << Y_k[k] << "," << T_k[index][k] << "  ";
         // cout << endl << endl;
         index = (index + 1)%N;
     }
     for(int k=0; k<K; k++) delta_k[k] /= batch_size;
+    
+    // cout << "ERROR: ";
+    // for(int k=0; k<K; k++) cout << delta_k[k] << " ";
+    // cout << endl;
 }
 
 void NeuralNetwork::backpropagation()
@@ -132,11 +142,15 @@ void NeuralNetwork::backpropagation()
         delta_j[j] = sum * Z_j[j] * (1 - Z_j[j]);
     }
 
+    //cout << "DERIVATIVES: " << endl;
     for(int k=0; k<K; k++){
         for(int j=0; j<=M; j++){
             d_E_wkj[k][j] = delta_k[k] * Z_j[j];
+            //cout << d_E_wkj[k][j] << " ";
         }
+        //cout << endl;
     }
+    //cout << endl;
 
     for(int j=0; j<M; j++){
         for(int i=0; i<=D; i++){
@@ -153,26 +167,30 @@ void NeuralNetwork::runGradientDescent(double alpha, int num_iterations)
         //cout << endl << "============= ITERATION ============= " << endl;
         forwardPropagation();
         backpropagation();
+        //cout << "WEIGHTS: " << endl;
         for(int k=0; k<K; k++){
             for(int j=0; j<=M; j++){
                 weights_kj[k][j] = weights_kj[k][j] - alpha*d_E_wkj[k][j];
-                cout << weights_kj[k][j] << " ";
+                //cout << weights_kj[k][j] << " ";
             }
-            cout << endl;
+            //cout << endl;
         }
-        cout << endl << endl;
+        //cout << endl << endl;
         for(int j=0; j<M; j++){
             for(int i=0; i<=D; i++){
                 weights_ji[j][i] = weights_ji[j][i] - alpha*d_E_wji[j][i];
+                //cout << weights_ji[j][i] << " ";
             }
+            //cout << endl;
         }
+        //cout << endl << endl;
         iteration++;
     }
 }
 
 void NeuralNetwork::predict(vector<pair<vector<double>, int> > data)
 {
-    int sz = data.size(), n = 0;
+    int sz = data.size(), n = 0, ct1 = 0, ct2 = 0;
     vector<vector<double> > target_values;
     
     for(int i=0; i<sz; i++){
@@ -182,7 +200,7 @@ void NeuralNetwork::predict(vector<pair<vector<double>, int> > data)
         target_values[i][data[i].second] = 1;
     }
 
-    while(n < 10){
+    while(n < sz){
         for(int i=0; i<D; i++) X_i[i] = data[n].first[i];
         X_i[D] = 1;
 
@@ -198,15 +216,27 @@ void NeuralNetwork::predict(vector<pair<vector<double>, int> > data)
         for(int k=0; k<K; k++){
             A_k[k] = delta_k[k] = 0;
             for(int j=0; j<=M; j++){
-                A_k[j] += weights_kj[k][j]*Z_j[j];
+                A_k[k] += weights_kj[k][j]*Z_j[j];
             }
             Y_k[k] = sigmoid(A_k[k]);
         }
 
-        for(int k=0; k<K; k++) cout << Y_k[k] << " ";
-        cout << endl;
-        for(int k=0; k<K; k++) cout << target_values[n][k] << " ";
-        cout << endl << endl;
+        int predicted = 0, true_;
+        double max = -1;
+        for(int k=0; k<K; k++){
+            if(Y_k[k] > max){
+                max = Y_k[k];
+                predicted = k;
+            }
+            if(target_values[n][k] == 1) true_ = k;
+        }
+        if(true_ == predicted) ct1++;
+        else ct2++;
+        // for(int k=0; k<K; k++) cout << Y_k[k] << " ";
+        // cout << endl;
+        // for(int k=0; k<K; k++) cout << target_values[n][k] << " ";
+        // cout << endl << endl;
         n++;
     }
+    cout << "ACCURACY: " << (double)ct1/(ct1+ct2) << endl;
 }

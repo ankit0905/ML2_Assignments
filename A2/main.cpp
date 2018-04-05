@@ -10,7 +10,7 @@ int main()
     vector<pair<vector<double>, int> > validation_data = loadDataset("data/validation.txt");
     vector<pair<vector<double>, int> > test_data = loadDataset("data/test.txt");
     NeuralNetwork nn(train_data);
-    nn.runGradientDescent(0.8,10);
+    nn.runGradientDescent(0.3,3000);
     nn.predict(validation_data);
     return 0;
 }
