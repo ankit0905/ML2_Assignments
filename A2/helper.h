@@ -1,3 +1,11 @@
+/* Function to load the dataset in the given file to a vector of pair and vectors.
+
+    params:
+    @input_file: string containing path to the file cntaining required dataset
+
+    returns:
+    @data: vector containing actual data extracted
+*/
 vector<pair<vector<double>, int> > loadDataset(string input_file)
 {
     vector<pair<vector<double>, int> > data;
