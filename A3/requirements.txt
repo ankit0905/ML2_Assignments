@@ -1,0 +1,5 @@
+numpy==1.14.2
+scipy==0.18.1
+matplotlib==2.0.0
+tensorflow==1.7.0
+Keras==2.1.5
