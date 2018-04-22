@@ -34,19 +34,39 @@ num_classes = y_test.shape[1]
 
 # model creation
 model = Sequential()
-model.add(Dense(no_of_pixels, input_dim=no_of_pixels, kernel_initializer='normal', activation='relu'))
-model.add(Dense(num_classes, kernel_initializer='normal', activation='softmax'))
+model.add(Dense(no_of_pixels, input_dim=no_of_pixels,
+                kernel_initializer='normal',
+                activation='relu'))
+# model.add(Dense(128, kernel_initializer='normal', 
+#                 activation='relu'))
+# model.add(Dense(64, kernel_initializer='normal',
+#                 activation='relu'))
+model.add(Dense(num_classes, kernel_initializer='normal',
+                activation='softmax'))
 
 # model compilation
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy',
+              optimizer='adam',
+              metrics=['accuracy'])
 
 # use of validation set to control number of iterations (epochs) done.
-earlyStopping = EarlyStopping(monitor='val_loss', patience=0, verbose=0, mode='auto')
+earlyStopping = EarlyStopping(monitor='val_loss',
+                              patience=0,
+                              verbose=0,
+                              mode='auto')
 
 # model fitting
-hist = model.fit(x_train, y_train, validation_split=0.05, epochs=16, callbacks=[earlyStopping], batch_size=batch_size, verbose=2)
+hist = model.fit(x_train, y_train, 
+                 validation_split=0.05,
+                 epochs=16,
+                 callbacks=[earlyStopping],
+                 batch_size=batch_size,
+                 verbose=2)
+
+print(model.summary())
 
 # output score and number of iterations done
 scores = model.evaluate(x_test, y_test, verbose=0)
 print("Baseline Error: %.2f%%" % (100-scores[1]*100))
+print("Accuracy: ", scores[1])
 print("Number of iterations: ",  iters_per_epoch * len(hist.history['val_loss']))
